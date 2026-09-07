@@ -127,6 +127,20 @@ if [ -z "$PL1" ]; then
   echo "Run with --autotune to find this machine's actual optimum."
 fi
 
+# --- thermald ---------------------------------------------------------------
+# thermald reads the vendor DPTF tables and re-asserts PL1 from them a few
+# seconds into boot. That can land AFTER our unit runs, silently reverting the
+# cap - the fix then appears installed but does nothing after a reboot.
+if systemctl is-enabled thermald >/dev/null 2>&1; then
+  echo
+  echo "thermald is enabled. It re-applies the firmware PL1 during boot and will"
+  echo "silently undo this fix. Disabling it (hardware PROCHOT at TjMax and the"
+  echo "kernel thermal governors still protect the CPU; this static cap is stricter"
+  echo "than what thermald was enforcing)."
+  systemctl disable --now thermald || true
+  echo "  thermald: $(systemctl is-enabled thermald 2>&1)"
+fi
+
 # --- install ----------------------------------------------------------------
 install -m 0755 "$(dirname "$0")/cpu-powercap-apply" /usr/local/bin/cpu-powercap-apply
 cat > /etc/default/cpu-powercap <<EOF
@@ -151,8 +165,9 @@ cat > /etc/systemd/system/cpu-powercap-watchdog.timer <<'EOF'
 [Unit]
 Description=Periodically re-assert CPU RAPL power cap
 [Timer]
-OnBootSec=2min
-OnUnitActiveSec=2min
+OnBootSec=30s
+OnUnitActiveSec=60s
+AccuracySec=1s
 [Install]
 WantedBy=timers.target
 EOF

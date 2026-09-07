@@ -1,13 +1,17 @@
 [Unit]
 Description=CPU RAPL power cap - prevents thermal runaway on Dell Precision mobile workstations
-Documentation=https://github.com/REPLACE_ME/dell-precision-thermal-fix
-After=multi-user.target suspend.target hibernate.target hybrid-sleep.target
+Documentation=https://github.com/charlyzedelta/dell-precision-thermal-fix
+# thermald applies the vendor's DPTF tables - which contain the broken PL1 - a few
+# seconds after it starts, which can land AFTER this unit runs. Ordering after it
+# narrows the race; the installer disables thermald outright, which closes it.
+After=multi-user.target suspend.target hibernate.target hybrid-sleep.target thermald.service
+Wants=cpu-powercap-watchdog.timer
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 EnvironmentFile=/etc/default/cpu-powercap
-ExecStart=/usr/local/bin/cpu-powercap-apply
+ExecStart=/bin/sh /usr/local/bin/cpu-powercap-apply
 
 [Install]
 WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target

@@ -89,3 +89,24 @@ The installer still ships a 2-minute watchdog timer. It is not required on this
 machine, but it is nearly free, other models in the line may behave differently,
 and a future BIOS could change the behaviour. Documented here so nobody mistakes
 it for evidence that the EC *does* interfere.
+
+## Persistence test (added after the benchmark)
+
+The benchmark above measured whether the cap *works*. It did not test whether the cap
+*survives a reboot* — and it did not.
+
+**Finding**: `thermald` re-applies the vendor DPTF PL1 roughly 3–10 s after it starts,
+which on the test machine landed after `cpu-powercap.service` had already run and exited
+successfully. The systemd unit reported `active/enabled` throughout.
+
+**Why it was easy to miss**: thermald does not contend for the setting continuously. A
+control run with thermald active held PL1=50 W for 20 s unchanged. Verifying the fix
+without rebooting therefore produces a false pass. The only reliable check is a reboot
+followed by reading the sysfs values back.
+
+**Resolution**: disable thermald, order the unit after it, and shorten the watchdog to
+30 s post-boot / 60 s thereafter. Verified across two reboots: PL1 held at 50 W, package
+temperature 55 °C at zero uptime versus 79 °C on the failing boot.
+
+**Generalisable lesson**: for any sysfs setting a vendor daemon also manages, "the unit
+exited 0" is not evidence the value is in effect. Read the value back, after a reboot.

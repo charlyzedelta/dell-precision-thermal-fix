@@ -154,3 +154,47 @@ We tested for this on the Precision 7560 and **found no drift** — 32 samples o
 8 minutes including a 3-minute load, all identical. The watchdog is kept as cheap
 insurance for other models and future BIOS revisions, not because this machine
 needs it. See `docs/METHODOLOGY.md`.
+
+## Gotcha: thermald silently reverts the cap on reboot
+
+**This is the failure mode most likely to bite you, and it is invisible.**
+
+`thermald` reads the vendor's DPTF firmware tables — the same tables that specify the
+broken PL1 — and re-asserts them a few seconds into boot. On the test machine:
+
+```
+22:47:15  thermald started
+22:47:18  cpu-powercap.service ran and reported success
+result    PL1 back to 200 W, tau back to 56 s
+```
+
+The unit reports `active/enabled`. `PL2` sticks, because thermald only manages
+`long_term`. So everything *looks* correct while the sustained cap — the part that
+matters — is gone. Package temperature was **79 °C at zero minutes uptime** on that boot
+versus **55 °C** once fixed.
+
+Note it does **not** fight the setting steady-state: re-applying by hand holds
+indefinitely. That makes it easy to verify the fix mid-session and wrongly conclude it
+persists. **Only a reboot proves it.**
+
+The installer therefore disables `thermald`, orders the unit `After=thermald.service`,
+and runs the watchdog at `OnBootSec=30s` / `OnUnitActiveSec=60s` as a third layer.
+`uninstall.sh` re-enables thermald.
+
+Disabling it is safe: hardware PROCHOT still throttles at TjMax, the kernel thermal
+governors are untouched, and a static 50 W PL1 is stricter than what thermald was
+enforcing anyway.
+
+### Always verify after a reboot
+
+```bash
+sudo reboot
+# then:
+R=/sys/class/powercap/intel-rapl:0
+echo "PL1 $(( $(cat $R/constraint_0_power_limit_uw)/1000000 ))W \
+tau $(( $(cat $R/constraint_0_time_window_us)/1000 ))ms \
+PL2 $(( $(cat $R/constraint_1_power_limit_uw)/1000000 ))W"
+```
+
+If PL1 is back to the firmware value, something is still re-asserting it. Check what
+started around the same time as `cpu-powercap.service` in `journalctl -b`.
