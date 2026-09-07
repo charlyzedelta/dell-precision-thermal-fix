@@ -143,3 +143,13 @@ AUTHORISED BY: Charles  (2026-09-07T22:31:37Z)
 23:18:56 restored: MSR=50W MMIO=50W (both must read 50)
 23:27:42 AIRFLOW POINT: cooler 2000 RPM
 23:27:42 rpm=2000 PL1=50W rep=1 -- cooling
+23:31:03   -> steady=65.7C max=69C work=15858.76/s throttle=0ms
+23:31:03 rpm=2000 PL1=65W rep=1 -- cooling
+23:34:35   -> steady=80.9C max=83C work=17548.78/s throttle=0ms
+23:34:35 rpm=2000 PL1=65W rep=2 -- cooling
+23:38:07   -> steady=80.4C max=85C work=17527.70/s throttle=0ms
+23:38:07 rpm=2000 PL1=50W rep=2 -- cooling
+23:41:38   -> steady=66.5C max=74C work=15986.19/s throttle=0ms
+23:41:38 AIRFLOW POINT COMPLETE (2000 RPM)
+23:41:38 RESTORING
+23:41:38 restored: MSR=50W MMIO=50W

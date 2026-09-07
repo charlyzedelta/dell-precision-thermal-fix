@@ -45,3 +45,23 @@ inside the boost window. The crossover below 10s is unmeasured.
   sample is already mid-heating. The t63/t90 figures the analyser prints are an
   artifact. Needs a dedicated idle->load->idle run.
 - fanRPM column: reads 0 because the fans are held off, not because they idled.
+
+## Airflow ladder (added 2026-09-07 23:41Z)
+
+Two PL1 points re-measured at cooler=2000 RPM, same protocol, n=2 each
+(benchmark/airflow-point.sh, results/airflow-ladder.tsv).
+
+| cooler | 50W steady | 65W steady | 65W work/s |
+|---|---|---|---|
+| none    | 81.8 C | -      | -     |
+| 300 RPM | 78.0 C | -      | -     |
+| 1400 RPM| 68.3 C | 82.0 C | 17521 |
+| 2000 RPM| 66.1 C | 80.7 C | 17538 |
+
+300->1400 buys 9.7 C. 1400->2000 buys 2.2 C at 50W, 1.4 C at 65W, and NO
+throughput (17521 vs 17538 = 0.1%, noise). Diminishing returns; 1400 is the
+setting. 2000 trades audible fan noise for headroom with no use.
+
+Nothing above 65W is worth chasing either: the stock run drew 74.3W actual
+with this workload, so ~74W is the workload's own ceiling, and 65W already
+returns 99.2% of stock. The remaining 65->74W band is worth under 1%.

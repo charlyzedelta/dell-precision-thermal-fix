@@ -1,1 +1,5 @@
 cooler_rpm	pl1_w	rep	ambientC	bogo_per_s	steadyC	maxC	steadyW	throttle_ms
+2000	50	1	32	15858.76	65.7	69	50.0	0
+2000	65	1	34	17548.78	80.9	83	65.0	0
+2000	65	2	35	17527.70	80.4	85	65.0	0
+2000	50	2	35	15986.19	66.5	74	50.0	0
