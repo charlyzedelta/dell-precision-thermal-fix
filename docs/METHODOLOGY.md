@@ -71,3 +71,21 @@ and precisely why a few minutes of it is an acceptable price to measure it.
   a well-validated one on Intel client parts.
 - **GPU idle throughout.** These figures do not describe combined CPU+GPU load,
   which is a hotter and separately interesting case.
+
+## EC-reset test
+
+Published RAPL guidance warns that some embedded controllers re-assert their own
+power limits at runtime, which would silently undo this fix. We tested for it
+rather than assuming either way.
+
+**Protocol**: sample PL1, its window, and PL2 every 15 s for 8 minutes, with a
+3-minute all-core load in the middle (an EC is most likely to intervene during a
+thermal event, not at idle).
+
+**Result on the Precision 7560 (BIOS 1.48.0): no drift.** All 32 samples reported
+`PL1=50W tau=7995ms PL2=65W`, unchanged, peak 86 °C during the load phase.
+
+The installer still ships a 2-minute watchdog timer. It is not required on this
+machine, but it is nearly free, other models in the line may behave differently,
+and a future BIOS could change the behaviour. Documented here so nobody mistakes
+it for evidence that the EC *does* interfere.

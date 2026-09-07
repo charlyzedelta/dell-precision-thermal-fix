@@ -26,7 +26,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-[ "$EUID" -eq 0 ] || { echo "run with sudo" >&2; exit 1; }
+[ "$MODE" = diagnose ] || [ "$EUID" -eq 0 ] || { echo "run with sudo (or --diagnose, which needs no root)" >&2; exit 1; }
 [ -d "$R" ] || { echo "No intel-rapl powercap zone. Intel CPU with RAPL required." >&2; exit 1; }
 [ "$(cat $R/constraint_0_name)" = "long_term" ] || {
   echo "constraint_0 is not long_term on this system; refusing to write blindly." >&2; exit 1; }

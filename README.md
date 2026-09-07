@@ -143,3 +143,14 @@ MSR 0x150 is locked. Power limits are the only software lever left.
 n=2 per config, one machine, one ambient. GPU idle throughout — combined CPU+GPU
 load is hotter and untested. Power figures are RAPL-modelled, not wall-measured.
 **Copy the method, not the wattage.**
+
+## A note on the watchdog
+
+The installer lays down a 2-minute timer that re-asserts the limits, because
+[published RAPL guidance warns some embedded controllers reset them at
+runtime](https://github.com/junaruga/framework-laptop-config/wiki/Improving-thermal-management-with-Intel-Running-Average-Power-Limit-(RAPL)).
+
+We tested for this on the Precision 7560 and **found no drift** — 32 samples over
+8 minutes including a 3-minute load, all identical. The watchdog is kept as cheap
+insurance for other models and future BIOS revisions, not because this machine
+needs it. See `docs/METHODOLOGY.md`.
