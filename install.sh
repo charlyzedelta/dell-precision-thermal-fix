@@ -38,12 +38,26 @@ pkg() { awk '{print int($1/1000)}' /sys/devices/platform/coretemp.0/hwmon/hwmon*
 CPU=$(awk -F: '/model name/{print $2; exit}' /proc/cpuinfo | sed 's/^ *//')
 STOCK_PL1=$(w 0); STOCK_PL2=$(w 1); STOCK_TAU=$(tau 0)
 
+# If we already installed, the live values are ours, not the firmware's.
+INSTALLED=0
+if [ -f /etc/default/cpu-powercap ]; then
+  INSTALLED=1
+  PRIOR=$(sed -n "s/^# Tuned //p" /etc/default/cpu-powercap | head -1)
+fi
+
 echo "=============================================================="
 echo " CPU            : $CPU"
-echo " Stock PL1      : ${STOCK_PL1} W   (window ${STOCK_TAU}s)"
-echo " Stock PL2      : ${STOCK_PL2} W"
+echo " Current PL1    : ${STOCK_PL1} W   (window ${STOCK_TAU}s)"
+echo " Current PL2    : ${STOCK_PL2} W"
 echo " Idle pkg temp  : $(pkg) C"
 echo "=============================================================="
+if [ "$INSTALLED" = 1 ]; then
+  echo "NOTE: this fix is already installed (${PRIOR:-date unknown})."
+  echo "      The values above are ITS values, not your firmware defaults."
+  echo "      Firmware stock is recorded in /etc/default/cpu-powercap."
+  grep "^# Tuned" /etc/default/cpu-powercap 2>/dev/null | sed "s/^/      /"
+  echo
+fi
 
 # --- defect heuristic -------------------------------------------------------
 # Mobile Intel parts are 15-65 W. A PL1 far above that is not a tuning choice,
@@ -57,7 +71,11 @@ elif [ "$STOCK_TAU" -ge 30 ]; then
   echo "   most of a minute before the rolling average reins it in."
   DEFECT=1
 else
-  echo "PL1 looks sane. You may not need this fix."
+  if [ "$INSTALLED" = 1 ]; then
+    echo "PL1 is sane because this fix is applied. Nothing to do."
+  else
+    echo "PL1 looks sane. You may not need this fix."
+  fi
   DEFECT=0
 fi
 [ "$MODE" = diagnose ] && exit 0

@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.sh text eol=lf
+install.sh text eol=lf
+uninstall.sh text eol=lf
+cpu-powercap-apply text eol=lf
+*.service text eol=lf
