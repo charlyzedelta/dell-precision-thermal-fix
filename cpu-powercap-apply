@@ -1,0 +1,15 @@
+#!/bin/sh
+# Applies RAPL power limits. Values come from /etc/default/cpu-powercap.
+set -e
+R=/sys/class/powercap/intel-rapl:0
+[ -d "$R" ] || { echo "intel-rapl not present; is this an Intel CPU with RAPL support?" >&2; exit 1; }
+
+# Verify constraint_0 really is long_term before writing - ordering is not guaranteed by spec
+if [ "$(cat $R/constraint_0_name)" != "long_term" ]; then
+  echo "ABORT: constraint_0 is not long_term on this system; refusing to write blindly" >&2
+  exit 1
+fi
+
+echo $((PL1_W * 1000000))    > $R/constraint_0_power_limit_uw
+echo $((PL1_TAU_S * 1000000)) > $R/constraint_0_time_window_us
+echo $((PL2_W * 1000000))    > $R/constraint_1_power_limit_uw

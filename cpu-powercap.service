@@ -1,0 +1,13 @@
+[Unit]
+Description=CPU RAPL power cap - prevents thermal runaway on Dell Precision mobile workstations
+Documentation=https://github.com/REPLACE_ME/dell-precision-thermal-fix
+After=multi-user.target suspend.target hibernate.target hybrid-sleep.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/default/cpu-powercap
+ExecStart=/usr/local/bin/cpu-powercap-apply
+
+[Install]
+WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target
