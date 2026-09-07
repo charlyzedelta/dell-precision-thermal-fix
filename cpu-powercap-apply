@@ -10,6 +10,41 @@ if [ "$(cat $R/constraint_0_name)" != "long_term" ]; then
   exit 1
 fi
 
+# Refuse to act on a malformed config. Without this an empty or non-numeric
+# value becomes a shell arithmetic error mid-script, and the machine ends up
+# with no cap -- the exact failure this whole tool exists to prevent. Fail
+# loudly instead.
+for v in PL1_W PL2_W PL1_TAU_S; do
+  eval "val=\${$v:-}"
+  case "$val" in
+    ''|*[!0-9]*) echo "ABORT: $v='$val' in /etc/default/cpu-powercap is not a positive integer" >&2; exit 1 ;;
+  esac
+  [ "$val" -gt 0 ] || { echo "ABORT: $v must be greater than zero" >&2; exit 1; }
+done
+
 echo $((PL1_W * 1000000))    > $R/constraint_0_power_limit_uw
 echo $((PL1_TAU_S * 1000000)) > $R/constraint_0_time_window_us
 echo $((PL2_W * 1000000))    > $R/constraint_1_power_limit_uw
+
+# --- MMIO domain ------------------------------------------------------------
+# intel-rapl-mmio:0 is a SECOND interface to the same package limit, and it is
+# not a copy of the MSR one: on the Precision 7560 it sat at full firmware
+# stock (PL1 75W / tau 56s / PL2 109W) while intel-rapl:0 read our 50W.
+#
+# The effective cap is the lower of the two, so leaving it alone was not
+# costing us headroom. It was leaving a door open: if the EC re-asserts PL1
+# through the MMIO path, stock values become the binding ones and the fix is
+# silently gone.
+#
+# Best-effort by design. Some platforms reject MMIO writes, and with `set -e`
+# a hard failure here would abort the script AFTER cpu-powercap.service has
+# already been marked RemainAfterExit=yes -- taking down the MSR cap that
+# works in order to tighten one that is not binding. Never trade the working
+# guard for the belt-and-braces one.
+M=/sys/class/powercap/intel-rapl-mmio:0
+if [ -d "$M" ] && [ "$(cat $M/constraint_0_name 2>/dev/null)" = "long_term" ]; then
+  echo $((PL1_W * 1000000))     > $M/constraint_0_power_limit_uw 2>/dev/null \
+    || echo "warn: MMIO PL1 write rejected; MSR cap unaffected" >&2
+  echo $((PL1_TAU_S * 1000000)) > $M/constraint_0_time_window_us 2>/dev/null || true
+  echo $((PL2_W * 1000000))     > $M/constraint_1_power_limit_uw 2>/dev/null || true
+fi

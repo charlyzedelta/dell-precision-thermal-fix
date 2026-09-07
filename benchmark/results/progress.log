@@ -1,0 +1,145 @@
+AUTHORISED BY: Charles  (2026-09-07T20:48:23Z)
+20:48:23 node-health timer paused for the duration
+20:48:23 run 1: PL1=45W rep=1 -- cooling to <=64C
+20:51:44 run 1 done: steady=77.6C max=79C work=15518.45/s throttle=0ms
+20:51:44 run 2: PL1=55W rep=1 -- cooling to <=64C
+20:55:16 run 2 done: steady=77.7C max=80C work=15701.29/s throttle=0ms
+20:55:16 run 3: PL1=65W rep=1 -- cooling to <=64C
+20:58:48 run 3 done: steady=77.4C max=83C work=15667.67/s throttle=0ms
+20:58:48 run 4: PL1=50W rep=1 -- cooling to <=64C
+21:02:19 run 4 done: steady=79.1C max=82C work=15613.68/s throttle=0ms
+21:02:19 run 5: PL1=60W rep=1 -- cooling to <=64C
+21:05:51 run 5 done: steady=78.3C max=84C work=15703.68/s throttle=0ms
+21:05:51 run 6: PL1=60W rep=2 -- cooling to <=64C
+21:09:33 run 6 done: steady=77.8C max=83C work=15654.93/s throttle=0ms
+21:09:33 run 7: PL1=50W rep=2 -- cooling to <=64C
+21:13:04 run 7 done: steady=78.6C max=82C work=15633.94/s throttle=0ms
+21:13:04 run 8: PL1=65W rep=2 -- cooling to <=64C
+21:16:36 run 8 done: steady=77.9C max=82C work=15625.37/s throttle=0ms
+21:16:36 run 9: PL1=55W rep=2 -- cooling to <=64C
+21:20:08 run 9 done: steady=77.9C max=84C work=15667.31/s throttle=0ms
+21:20:08 run 10: PL1=45W rep=2 -- cooling to <=64C
+21:23:40 run 10 done: steady=78.0C max=82C work=15528.12/s throttle=0ms
+21:23:40 PHASE 1 COMPLETE
+21:23:40 burst: PL1=50W -- cooling
+21:30:11 burst PL1=50W complete
+21:30:11 burst: PL1=65W -- cooling
+21:36:32 burst PL1=65W complete
+21:36:32 burst: PL1=50W -- cooling
+21:38:08 RESTORING tuned cap and node-health timer
+21:38:08 restored: PL1=50W
+AUTHORISED BY: Charles  (2026-09-07T21:38:11Z)
+21:38:11 node-health timer paused for the duration
+21:38:11 powercap watchdog paused (it re-asserts 50W every 60s)
+21:38:11 run 1: PL1=45W rep=1 -- cooling to <=64C
+21:41:33 run 1 done: steady=73.2C max=75C work=14822.24/s throttle=0ms
+21:41:33 run 2: PL1=55W rep=1 -- cooling to <=64C
+21:45:05 run 2 done: steady=77.3C max=81C work=15632.23/s throttle=0ms
+21:45:05 run 3: PL1=65W rep=1 -- cooling to <=64C
+21:48:36 run 3 done: steady=78.7C max=81C work=15617.81/s throttle=0ms
+21:48:36 run 4: PL1=50W rep=1 -- cooling to <=64C
+21:52:08 run 4 done: steady=77.9C max=81C work=15679.60/s throttle=0ms
+21:52:08 run 5: PL1=60W rep=1 -- cooling to <=64C
+21:55:40 run 5 done: steady=77.0C max=82C work=15665.16/s throttle=0ms
+21:55:40 run 6: PL1=60W rep=2 -- cooling to <=64C
+21:59:11 run 6 done: steady=79.0C max=82C work=15532.19/s throttle=0ms
+21:59:11 run 7: PL1=50W rep=2 -- cooling to <=64C
+22:01:53 RESTORING tuned cap and node-health timer
+22:01:53 restored: PL1=50W
+22:01:53 run 7 done: steady=77.5C max=81C work=15607.32/s throttle=0ms
+22:01:53 run 8: PL1=65W rep=2 -- cooling to <=64C
+AUTHORISED BY: Charles  (2026-09-07T22:01:55Z)
+22:01:55 node-health timer paused for the duration
+22:01:55 powercap watchdog paused (it re-asserts 50W every 60s)
+22:01:55 run 1: PL1=45W rep=1 -- cooling to <=64C
+22:05:17 run 1 done: steady=74.1C max=82C work=7610.06/s throttle=0ms
+22:05:17 run 2: PL1=55W rep=1 -- cooling to <=64C
+22:05:25 WARNING run 8: PL1 drifted 65W -> 55W during the run
+22:05:25 run 8 done: steady=74.1C max=80C work=7736.67/s throttle=0ms
+22:05:25 run 9: PL1=55W rep=2 -- cooling to <=64C
+22:08:47 run 9 done: steady=82.4C max=85C work=8149.94/s throttle=0ms
+22:08:47 run 10: PL1=45W rep=2 -- cooling to <=64C
+22:08:49 WARNING run 2: PL1 drifted 55W -> 45W during the run
+22:08:49 run 2 done: steady=82.4C max=85C work=8199.82/s throttle=0ms
+22:08:49 run 3: PL1=65W rep=1 -- cooling to <=64C
+22:12:11 run 3 done: steady=90.6C max=97C work=8944.01/s throttle=455ms
+22:12:11 run 4: PL1=50W rep=1 -- cooling to <=64C
+22:12:19 WARNING run 10: PL1 drifted 45W -> 50W during the run
+22:12:19 run 10 done: steady=90.6C max=96C work=8854.89/s throttle=455ms
+22:12:19 PHASE 1 COMPLETE
+22:12:19 burst: PL1=50W -- cooling
+22:15:43 run 4 done: steady=77.6C max=85C work=13071.83/s throttle=0ms
+22:15:43 run 5: PL1=60W rep=1 -- cooling to <=64C
+22:18:40 burst PL1=50W complete
+22:18:40 burst: PL1=65W -- cooling
+22:19:15 run 5 done: steady=86.4C max=94C work=14649.33/s throttle=1ms
+22:19:15 run 6: PL1=60W rep=2 -- cooling to <=64C
+22:22:47 run 6 done: steady=86.1C max=91C work=13983.24/s throttle=0ms
+22:22:47 run 7: PL1=50W rep=2 -- cooling to <=64C
+22:25:42 burst PL1=65W complete
+22:25:42 EXPERIMENT COMPLETE
+22:25:42 RESTORING tuned cap and node-health timer
+22:25:42 restored: PL1=50W
+22:25:44 run 7 done: steady=69.3C max=72C work=13482.36/s throttle=0ms
+22:25:44 run 8: PL1=65W rep=2 -- cooling to <=64C
+AUTHORISED BY: Charles  (2026-09-07T22:26:01Z)
+22:26:01 cooler RPM (operator-reported): 1400
+22:26:01 node-health timer paused for the duration
+22:26:01 powercap watchdog paused (it re-asserts 50W every 60s)
+22:26:01 run 1: PL1=45W rep=1 -- cooling to <=64C
+22:26:04 RESTORING tuned cap and node-health timer
+22:26:04 restored: MSR=50W MMIO=50W (both must read 50)
+22:26:04 RESTORING tuned cap and node-health timer
+22:26:04 restored: MSR=50W MMIO=50W (both must read 50)
+22:29:06 WARNING run 8: PL1 drifted 65W -> 50W during the run
+22:29:06 run 8 done: steady=67.8C max=77C work=8646.83/s throttle=0ms
+22:29:06 run 9: PL1=55W rep=2 -- cooling to <=64C
+22:29:22 WARNING run 1: PL1 drifted 45W -> 55W during the run
+22:29:22 run 1 done: steady=67.8C max=72C work=8585.91/s throttle=0ms
+22:29:23 run 2: PL1=55W rep=1 -- cooling to <=64C
+22:30:04 RESTORING tuned cap and node-health timer
+22:30:04 restored: MSR=50W MMIO=50W (both must read 50)
+22:30:04 RESTORING tuned cap and node-health timer
+22:30:04 restored: MSR=50W MMIO=50W (both must read 50)
+22:30:04 WARNING run 2: PL1 drifted 55W -> 50W during the run
+22:30:04 run 2 done: steady=68.1C max=74C work=9239.05/s throttle=0ms
+22:30:04 run 3: PL1=65W rep=1 -- cooling to <=64C
+22:30:07 RESTORING tuned cap and node-health timer
+22:30:07 restored: MSR=50W MMIO=50W (both must read 50)
+22:30:07 WARNING run 9: PL1 drifted 55W -> 50W during the run
+22:30:07 run 9 done: steady=68.1C max=75C work=7096.73/s throttle=0ms
+22:30:07 run 10: PL1=45W rep=2 -- cooling to <=64C
+AUTHORISED BY: Charles  (2026-09-07T22:31:37Z)
+22:31:37 cooler RPM (operator-reported): 1400
+22:31:37 node-health timer paused for the duration
+22:31:37 powercap watchdog paused (it re-asserts 50W every 60s)
+22:31:37 run 1: PL1=45W rep=1 -- cooling to <=64C
+22:34:59 run 1 done: steady=62.2C max=64C work=15043.11/s throttle=0ms
+22:34:59 run 2: PL1=55W rep=1 -- cooling to <=64C
+22:38:21 run 2 done: steady=71.7C max=79C work=16543.48/s throttle=0ms
+22:38:21 run 3: PL1=65W rep=1 -- cooling to <=64C
+22:41:42 run 3 done: steady=82.0C max=88C work=17506.25/s throttle=0ms
+22:41:42 run 4: PL1=50W rep=1 -- cooling to <=64C
+22:45:04 run 4 done: steady=68.1C max=77C work=15902.88/s throttle=0ms
+22:45:04 run 5: PL1=60W rep=1 -- cooling to <=64C
+22:48:36 run 5 done: steady=77.0C max=82C work=17039.76/s throttle=0ms
+22:48:36 run 6: PL1=60W rep=2 -- cooling to <=64C
+22:52:07 run 6 done: steady=76.9C max=82C work=16935.27/s throttle=0ms
+22:52:07 run 7: PL1=50W rep=2 -- cooling to <=64C
+22:55:39 run 7 done: steady=68.5C max=72C work=15815.93/s throttle=0ms
+22:55:39 run 8: PL1=65W rep=2 -- cooling to <=64C
+22:59:11 run 8 done: steady=82.1C max=84C work=17534.96/s throttle=0ms
+22:59:11 run 9: PL1=55W rep=2 -- cooling to <=64C
+23:02:43 run 9 done: steady=71.8C max=75C work=16480.73/s throttle=0ms
+23:02:43 run 10: PL1=45W rep=2 -- cooling to <=64C
+23:06:14 run 10 done: steady=63.6C max=69C work=15060.96/s throttle=0ms
+23:06:14 PHASE 1 COMPLETE
+23:06:14 burst: PL1=50W -- cooling
+23:12:35 burst PL1=50W complete
+23:12:35 burst: PL1=65W -- cooling
+23:18:56 burst PL1=65W complete
+23:18:56 EXPERIMENT COMPLETE
+23:18:56 RESTORING tuned cap and node-health timer
+23:18:56 restored: MSR=50W MMIO=50W (both must read 50)
+23:27:42 AIRFLOW POINT: cooler 2000 RPM
+23:27:42 rpm=2000 PL1=50W rep=1 -- cooling

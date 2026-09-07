@@ -1,0 +1,11 @@
+stress-ng: info:  [88173] setting to a 3 mins run per stressor
+stress-ng: info:  [88173] dispatching hogs: 16 cpu
+stress-ng: info:  [88173] note: 16 cpus have scaling governors set to powersave and this may impact performance; setting /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor to 'performance' may improve performance
+stress-ng: metrc: [88173] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+stress-ng: metrc: [88173]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+stress-ng: metrc: [88173] cpu             3151147    180.00   2872.37      0.04     17506.25        1097.04
+stress-ng: info:  [88173] skipped: 0
+stress-ng: info:  [88173] passed: 16: cpu (16)
+stress-ng: info:  [88173] failed: 0
+stress-ng: info:  [88173] metrics untrustworthy: 0
+stress-ng: info:  [88173] successful run completed in 3 mins
