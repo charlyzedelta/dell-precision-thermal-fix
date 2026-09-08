@@ -99,3 +99,39 @@ Two prior versions of this test were VOID and are kept as
 burst-crossover-VOID-quantized.tsv: the first polled temperature inside the
 timing loop (sleep 0.25, quantizing 48 of 80 samples to exactly 256ms) and
 mis-calibrated ops-per-second by 15x, so bursts ran 0.25-0.8s instead of 1-9s.
+
+## Combined CPU+GPU load (added 2026-09-08, cooler at 2000 RPM)
+
+Every figure above was measured with the GPU IDLE, and the methodology listed
+combined load as untested. Now measured: 5 minutes of back-to-back local
+inference (qwen2.5-7b via Ollama) with all 16 CPU threads under stress-ng,
+PL1 at 50W. Sampler runs outside the load's timing path. n=47 steady samples.
+Data: results/gpu-thermal-both.tsv
+
+| | CPU-only @50W | CPU + GPU @50W |
+|---|---|---|
+| CPU steady | 68.3 C | **74.6 C** |
+| CPU peak | 74 C | **78 C** |
+| GPU | idle | **90 W, 62 C, 97% util** |
+| throttling | 0 ms | **0 ms / 300 s** |
+
+**Sustained GPU inference costs 6.3 C of CPU headroom and causes no
+throttling.** The 45-65W envelope holds under combined load.
+
+Extrapolating to 65W: CPU-only was 82.0 C, so combined would land near 88 C
+steady with peaks near 92 C. Under TjMax but a much thinner margin than the
+CPU-only figure suggests. **60W (77.0 C -> ~83 C combined) is the safer choice
+if the machine will run inference and CPU work at the same time.**
+
+### Correction: the laptop fans are fine
+
+Earlier notes in this repo and in bot-net's LOG.md claimed the fans were held
+off in manual mode (`pwm1_enable=1, pwm1=0`), inferred from them reading 0 RPM
+all day, and speculated it was collateral from masking thermald. Both claims
+were wrong. Under this load they spin:
+
+    fan1: 1044 RPM   fan2: 1066 RPM
+
+They read 0 all day because nothing had ever asked enough of the machine. The
+EC ramps them from chassis sensors, and until a sustained combined load there
+was nothing to ramp for. There is no fan fault and no missing backup.
