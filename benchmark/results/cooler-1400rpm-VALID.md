@@ -177,3 +177,34 @@ should not be inferred: this quantity has now defeated two interpolations.
 
 The GPU-idle envelope (45-65W, nothing throttling) still stands — but it
 describes a machine doing CPU work alone, which is not what this one does.
+
+## 55W under combined load — HOLDS (2026-09-08, cooler 1400 RPM)
+
+Same protocol, 420s, abort at 95C. Data: results/combined-pl55.tsv
+
+Ran the full duration. Late window t>=120s, n=30: **cpu mean 83.7 C, peak 86 C,
+0 ms throttling**. Last five samples 85/84/86/86/86 — flat, not climbing. GPU
+held 90 W at 67 C.
+
+### The complete combined-load picture
+
+| PL1 | GPU idle | combined | penalty | % of stock | verdict |
+|---|---|---|---|---|---|
+| 50W | 68.3 C | **74.6 C**, 0 ms, n=47 | +6.3 C | 89.8% | holds |
+| 55W | 71.8 C | **83.7 C** (peak 86), 0 ms, n=30 | +11.9 C | 93.5% | **holds** |
+| 60W | 77.0 C | no steady state, 97 C at abort | — | 96.2% | **fails** |
+
+**The cliff sits between 55 and 60 W and is sharp.** The penalty nearly doubles
+from 50 to 55, then 60 does not converge at all. Neither endpoint predicted
+that shape, which is why two interpolations of this quantity failed.
+
+### Which to run
+
+Both 50 and 55 W are defensible. 55W is measured stable with 14 C of margin and
+buys 3.7 points of stock throughput.
+
+**50W is the more conservative choice for one reason not visible in the table:
+55W is far more cooler-dependent.** Without the cooler, 50W alone sat at 81.8 C
+*GPU-idle*. At 55W combined the package is 83.7 C *with* 1400 RPM of forced
+airflow — so an unplugged cooler, a warmer room, or a blocked intake spends
+headroom that 50W still has. 50W has slack for a bad day; 55W spends most of it.
