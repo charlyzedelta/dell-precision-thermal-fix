@@ -13,11 +13,11 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 # Count real experiment processes: argv[0]=bash, argv[1] contains the script.
 # Matching on the whole command line would match this script and any shell
 # that merely mentions it, which is how "remaining: 1" appeared last time.
-count()   { ps -eo pid,args --no-headers | awk '$2=="bash" && $3 ~ /experiment-dynamic/ {n++} END{print n+0}'; }
+count()   { ps -eo pid,args --no-headers | awk '$2=="bash" && $3 ~ /experiment-sweep/ {n++} END{print n+0}'; }
 nstress() { pgrep -x stress-ng 2>/dev/null | wc -l; }
 
 echo "before: $(count) experiment proc(s), $(nstress) stress-ng"
-pkill -f 'experiment-dynamic.*--authorized-by' 2>/dev/null
+pkill -f 'experiment-sweep.*--authorized-by' 2>/dev/null
 pkill -x stress-ng 2>/dev/null
 sleep 5
 # Anything still alive has the old broken trap: it caught TERM, ran cleanup,
@@ -26,7 +26,7 @@ sleep 5
 # below, once everything is confirmed dead.
 if [ "$(count)" != 0 ] || [ "$(nstress)" != 0 ]; then
   echo "survivors after TERM -- escalating to KILL"
-  pkill -9 -f 'experiment-dynamic.*--authorized-by' 2>/dev/null
+  pkill -9 -f 'experiment-sweep.*--authorized-by' 2>/dev/null
   pkill -9 -x stress-ng 2>/dev/null
 fi
 
@@ -39,19 +39,19 @@ c=$(count); s=$(nstress)
 echo "after kill: $c experiment proc(s), $s stress-ng"
 if [ "$c" != 0 ] || [ "$s" != 0 ]; then
   echo "ABORT: something survived; not launching into a dirty machine" >&2
-  ps -eo pid,ppid,etime,args --no-headers | grep -E 'experiment-dynamic|stress-ng' | grep -v grep >&2
+  ps -eo pid,ppid,etime,args --no-headers | grep -E 'experiment-sweep|stress-ng' | grep -v grep >&2
   exit 1
 fi
 
 # Only now is it safe to configure state: nothing is left to restore it behind us.
 systemctl stop rapl-sample.service 2>/dev/null
 systemctl restart cpu-powercap.service
-systemctl stop cpu-powercap-watchdog.timer bot-net-node-health.timer
+systemctl stop cpu-powercap-watchdog.timer ${PAUSE_TIMER:-}
 echo "watchdog now: $(systemctl is-active cpu-powercap-watchdog.timer)"
 echo "MSR=$(( $(cat /sys/class/powercap/intel-rapl:0/constraint_0_power_limit_uw)/1000000 ))W MMIO=$(( $(cat /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw)/1000000 ))W"
 
 tmux kill-session -t bench 2>/dev/null
-tmux new-session -d -s bench "COOLER_RPM=${COOLER_RPM:-1400} bash $HERE/experiment-dynamic-v4.sh --authorized-by ${WHO:-Charles}"
+tmux new-session -d -s bench "COOLER_RPM=${COOLER_RPM:-1400} bash $HERE/experiment-sweep.sh --authorized-by ${WHO:-Charles}"
 sleep 6
 echo "--- progress ---"
 tail -6 "$HERE/results/progress.log"

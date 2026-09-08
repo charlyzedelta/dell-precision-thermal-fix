@@ -12,7 +12,7 @@ RPM=${COOLER_RPM:?set COOLER_RPM to the cooler setting you dialled in}
 [ "$(id -u)" = 0 ] || { echo "run as root" >&2; exit 1; }
 mkdir -p "$LOGD"
 
-LOCK=/run/experiment-dynamic.lock
+LOCK=/run/experiment-sweep.lock
 exec 9>"$LOCK" || exit 1
 flock -n 9 || { echo "REFUSING: another experiment holds the lock" >&2; exit 3; }
 pgrep -x stress-ng >/dev/null && { echo "REFUSING: stress-ng already running" >&2; exit 3; }
@@ -25,7 +25,7 @@ cleanup() {
   say "RESTORING"
   systemctl start cpu-powercap-watchdog.timer 2>/dev/null
   systemctl restart cpu-powercap.service 2>/dev/null
-  systemctl start bot-net-node-health.timer 2>/dev/null
+  systemctl start ${PAUSE_TIMER:-} 2>/dev/null
   pkill -x stress-ng 2>/dev/null; systemctl stop rapl-sample.service 2>/dev/null
   say "restored: MSR=$(( $(cat $R/constraint_0_power_limit_uw)/1000000 ))W MMIO=$(( $(cat $RM/constraint_0_power_limit_uw)/1000000 ))W"
 }
@@ -33,7 +33,7 @@ on_signal() { say "signal, aborting"; cleanup; trap - EXIT; exit 130; }
 trap cleanup EXIT
 trap on_signal INT TERM HUP QUIT
 
-systemctl stop bot-net-node-health.timer cpu-powercap-watchdog.timer 2>/dev/null
+systemctl stop ${PAUSE_TIMER:-} cpu-powercap-watchdog.timer 2>/dev/null
 say "AIRFLOW POINT: cooler ${RPM} RPM"
 
 set_pl() {

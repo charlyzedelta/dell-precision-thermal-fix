@@ -1,7 +1,7 @@
 # PL1 sweep with Llano cooler at 1400 RPM  (VALID — this is the real dataset)
 
-Run 2026-09-07 22:31-23:18Z, authorised by Charles under a thermal-only exception
-to bot-net PLAN.md Appendix C. Harness: experiment-dynamic-v4.sh.
+Run 2026-09-07 22:31-23:18Z, authorised under a thermal-only exception to
+this host's agent policy. Harness: experiment-sweep.sh.
 
 ## Configuration
 - Cooler: Llano laptop cooler, **1400 RPM** (range 300-2800), fixed for the whole run

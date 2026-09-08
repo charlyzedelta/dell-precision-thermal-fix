@@ -1,5 +1,5 @@
 #!/bin/bash
-# experiment-dynamic.sh -- data for a DYNAMIC power controller, cooler attached.
+# experiment-sweep.sh -- data for a DYNAMIC power controller, cooler attached.
 #
 # Differs from experiment.sh in three ways, all deliberate:
 #   1. PL1 is swept as a single variable. experiment.sh moved PL2 with it
@@ -14,7 +14,7 @@
 #      restores only on normal completion, so an interrupt could leave the
 #      machine parked at stock 200W indefinitely.
 #
-# Run as root:  sudo bash experiment-dynamic.sh
+# Run as root:  sudo bash experiment-sweep.sh
 set -u
 
 R=/sys/class/powercap/intel-rapl:0
@@ -37,7 +37,7 @@ mkdir -p "$LOGD"
 # and halved bogo_ops as two stress-ng sets split the machine. Nothing in the
 # harness prevented it. An experiment that can silently run twice is an
 # experiment whose numbers mean nothing.
-LOCK=/run/experiment-dynamic.lock
+LOCK=/run/experiment-sweep.lock
 exec 9>"$LOCK" || { echo "cannot open $LOCK" >&2; exit 1; }
 if ! flock -n 9; then
   echo "REFUSING: another experiment already holds $LOCK" >&2
@@ -50,8 +50,8 @@ if pgrep -x stress-ng >/dev/null; then
   exit 3
 fi
 
-# ---- Appendix C gate -------------------------------------------------------
-# bot-net PLAN.md Appendix C, machine-wide policy on oz-precision-7560:
+# ---- site-policy gate ----------------------------------------------------
+# This host carries a machine-wide policy for automated agents which reads:
 #   "Never modify, stop, disable or mask cpu-powercap.service ... If
 #    /sys/class/powercap/intel-rapl:0/constraint_0_power_limit_uw does not
 #    read 50000000, stop and tell a human."
@@ -66,12 +66,12 @@ if [ -z "$AUTH" ]; then
 REFUSING TO RUN.
 
 This sweeps intel-rapl:0/constraint_0_power_limit_uw across 45-65W, which
-bot-net PLAN.md Appendix C forbids by name on this machine. The cap is what
+this host's agent policy forbids by name. The cap is what
 stops the chassis thermally shutting down.
 
-If Bijan has signed off on a time-boxed exception, re-run as:
+If a human has signed off on a time-boxed exception, re-run as:
 
-  sudo bash experiment-dynamic.sh --authorized-by "<name>"
+  sudo bash experiment-sweep.sh --authorized-by "<name>"
 
 The cap is restored from a trap on any exit, including Ctrl-C and abort.
 GATE
@@ -85,15 +85,15 @@ fan()  { sensors 2>/dev/null | awk '/^fan1:/{print $2}' | head -1; }
 say()  { echo "$(date -u +%H:%M:%S) $*" | tee -a "$PROG"; }
 
 # ---- safety: always put the machine back, whatever happens -----------------
-# node-health alarms above 90C and posts to the ntfy topic every 10 min. A
-# two-hour benchmark would fire it repeatedly at Bijan for temperatures we are
-# deliberately causing. Pause it, and restore it in the same trap that
-# restores the cap so one cannot happen without the other.
+# A monitoring timer that alarms on high package temperature will fire
+# repeatedly during a benchmark, for temperatures we are deliberately causing.
+# Name it in PAUSE_TIMER and it is paused for the duration, and restored in the
+# same trap that restores the cap -- so one cannot happen without the other.
 cleanup() {
-  say "RESTORING tuned cap and node-health timer"
+  say "RESTORING tuned cap and monitoring timer"
   systemctl start cpu-powercap-watchdog.timer 2>/dev/null
   systemctl restart cpu-powercap.service 2>/dev/null
-  systemctl start bot-net-node-health.timer 2>/dev/null
+  systemctl start ${PAUSE_TIMER:-} 2>/dev/null
   pkill -x stress-ng 2>/dev/null
   systemctl stop rapl-sample.service 2>/dev/null
   say "restored: MSR=$(( $(cat $R/constraint_0_power_limit_uw)/1000000 ))W MMIO=$(( $(cat $RM/constraint_0_power_limit_uw 2>/dev/null || echo 0)/1000000 ))W (both must read 50)"
@@ -108,9 +108,9 @@ on_signal() { say "signal received, aborting run"; cleanup; trap - EXIT; exit 13
 trap cleanup EXIT
 trap on_signal INT TERM HUP QUIT
 
-systemctl stop bot-net-node-health.timer 2>/dev/null
+systemctl stop ${PAUSE_TIMER:-} 2>/dev/null
 say "cooler RPM (operator-reported): ${COOLER_RPM:-UNRECORDED}"
-say "node-health timer paused for the duration"
+say "monitoring timer paused for the duration (${PAUSE_TIMER:-none})"
 # cpu-powercap-watchdog.timer re-asserts PL1 from /etc/default/cpu-powercap
 # every 60s. The first run of this experiment swept 45-65W and measured 50.0W
 # in all ten runs, because the watchdog reset the cap ~3x per 180s run. Any
