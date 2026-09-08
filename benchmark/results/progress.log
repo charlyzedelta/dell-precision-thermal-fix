@@ -153,3 +153,51 @@ AUTHORISED BY: Charles  (2026-09-07T22:31:37Z)
 23:41:38 AIRFLOW POINT COMPLETE (2000 RPM)
 23:41:38 RESTORING
 23:41:38 restored: MSR=50W MMIO=50W
+03:33:16 BURST CROSSOVER: cooler 2000 RPM, 8 reps per cell
+03:33:16 PL1=50W ops=1000/worker -- cooling
+03:35:04   PL1=50W ops=1000: median 256ms
+03:35:04 PL1=50W ops=2000/worker -- cooling
+03:36:52   PL1=50W ops=2000: median 256ms
+03:36:52 PL1=50W ops=3000/worker -- cooling
+03:38:40   PL1=50W ops=3000: median 256ms
+03:38:40 PL1=50W ops=5000/worker -- cooling
+03:40:31   PL1=50W ops=5000: median 522ms
+03:40:31 PL1=50W ops=9000/worker -- cooling
+03:42:23   PL1=50W ops=9000: median 792ms
+03:42:23 PL1=65W ops=1000/worker -- cooling
+03:44:11   PL1=65W ops=1000: median 256ms
+03:44:11 PL1=65W ops=2000/worker -- cooling
+03:45:59   PL1=65W ops=2000: median 256ms
+03:45:59 PL1=65W ops=3000/worker -- cooling
+03:47:47   PL1=65W ops=3000: median 256ms
+03:47:47 PL1=65W ops=5000/worker -- cooling
+03:49:37   PL1=65W ops=5000: median 519ms
+03:49:37 PL1=65W ops=9000/worker -- cooling
+03:51:28   PL1=65W ops=9000: median 520ms
+03:51:28 BURST CROSSOVER COMPLETE
+03:51:28 RESTORING
+03:51:28 restored: MSR=50W MMIO=50W
+03:57:22 BURST CROSSOVER: cooler 2000 RPM, 8 reps per cell
+03:57:22 PL1=50W ops=15000/worker -- cooling
+03:59:16   PL1=50W ops=15000: median 964ms
+03:59:16 PL1=50W ops=31000/worker -- cooling
+04:01:18   PL1=50W ops=31000: median 2011ms
+04:01:18 PL1=50W ops=46000/worker -- cooling
+04:03:28   PL1=50W ops=46000: median 2981ms
+04:03:28 PL1=50W ops=77000/worker -- cooling
+04:05:54   PL1=50W ops=77000: median 5059ms
+04:05:54 PL1=50W ops=154000/worker -- cooling
+04:09:02   PL1=50W ops=154000: median 10167ms
+04:09:02 PL1=65W ops=15000/worker -- cooling
+04:10:54   PL1=65W ops=15000: median 842ms
+04:10:54 PL1=65W ops=31000/worker -- cooling
+04:12:54   PL1=65W ops=31000: median 1734ms
+04:12:54 PL1=65W ops=46000/worker -- cooling
+04:15:01   PL1=65W ops=46000: median 2579ms
+04:15:01 PL1=65W ops=77000/worker -- cooling
+04:17:22   PL1=65W ops=77000: median 4415ms
+04:17:23 PL1=65W ops=154000/worker -- cooling
+04:20:20   PL1=65W ops=154000: median 8999ms
+04:20:20 BURST CROSSOVER COMPLETE
+04:20:20 RESTORING
+04:20:20 restored: MSR=50W MMIO=50W
