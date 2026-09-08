@@ -49,7 +49,12 @@ while :; do
   if [ "${c:-0}" -ge "$ABORT_C" ]; then
     echo "ABORT: package ${c}C >= ${ABORT_C}C"; break
   fi
-  sleep 5
+  # 10s, not 5s. Polling nvidia-smi every 5s for minutes put this GPU into
+  # NV_ERR_RESET_REQUIRED on 2026-09-08 (kernel: "Failed to get GCx
+  # pre-requisite, status=0x62"). GCx is the laptop GPU's runtime power
+  # management, and hammering telemetry while the driver manages low-power
+  # states breaks it. 30 samples over 300s is ample for a steady-state mean.
+  sleep 10
 done
 T1=$(thr)
 echo

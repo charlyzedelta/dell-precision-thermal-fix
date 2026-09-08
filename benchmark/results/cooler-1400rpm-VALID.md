@@ -135,3 +135,45 @@ were wrong. Under this load they spin:
 They read 0 all day because nothing had ever asked enough of the machine. The
 EC ramps them from chassis sensors, and until a sustained combined load there
 was nothing to ramp for. There is no fan fault and no missing backup.
+
+## 60W under combined CPU+GPU load — ABORTED (2026-09-08, cooler 1400 RPM)
+
+Same protocol as the 50W combined run: back-to-back local inference plus 16 CPU
+threads under stress-ng, sampler outside the load's timing path, 95C abort.
+Data: results/gpu-thermal-both.tsv
+
+**The run aborted at t=213s on the 95C threshold, having reached 97C.** It never
+reached steady state — the package temperature was still climbing when the
+abort fired:
+
+| t | cpu | | t | cpu |
+|---|---|---|---|---|
+| 10s | 70 C | | 122s | 91 C |
+| 31s | 80 C | | 142s | 94 C |
+| 51s | 84 C | | 183s | 91 C |
+| 91s | 87 C | | 203s | 94 C |
+| 112s | 87 C | | **213s** | **97 C** (abort, 40 ms throttle) |
+
+GPU held 90 W at 66-69 C throughout. The 40 ms of throttling is the **first
+non-zero throttle figure anywhere in this envelope**.
+
+### The combined penalty is not linear in PL1
+
+| PL1 | GPU idle | combined | penalty |
+|---|---|---|---|
+| 50W | 68.3 C steady | 74.6 C steady, 0 ms throttle, n=47 | **+6.3 C** |
+| 60W | 77.0 C steady | **no steady state**, 97 C at abort | **+12.2 C and rising** |
+
+Higher PL1 puts more CPU heat through the same heatsink that is already
+carrying 90 W of GPU. The penalty nearly doubled between 50 and 60 W, so it
+cannot be extrapolated — an estimate of ~83 C for this case was wrong by 14 C
+at the peak.
+
+### Consequence
+
+**50W is the setting for a machine that runs inference.** It is the only PL1
+measured to hold a steady state under combined load. 55W is **unmeasured** and
+should not be inferred: this quantity has now defeated two interpolations.
+
+The GPU-idle envelope (45-65W, nothing throttling) still stands — but it
+describes a machine doing CPU work alone, which is not what this one does.
